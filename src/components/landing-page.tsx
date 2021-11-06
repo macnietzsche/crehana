@@ -1,64 +1,57 @@
-import React, { useEffect, useState } from "react";
-import { Row, Col, Container } from "react-bootstrap";
-import { ISelect } from "common/types/general";
+import React, { useState } from "react";
+import { Row, Col, Container, Button } from "react-bootstrap";
+import { ISelect } from "common/types";
 import Select, { SingleValue, MultiValue } from "react-select";
 import { useNavigate } from "react-router-dom";
-
-const COUNTRIES: ISelect[] = [
-  { label: "hola1", value: "1" },
-  { label: "hola2", value: "2" },
-  { label: "hola3", value: "3" },
-  { label: "hola4", value: "4" },
-];
-const CONTINENTS: ISelect[] = [
-  { label: "hola1", value: "1" },
-  { label: "hola2", value: "2" },
-  { label: "hola3", value: "3" },
-  { label: "hola4", value: "4" },
-];
-const CURRENCIES: ISelect[] = [
-  { label: "hola1", value: "1" },
-  { label: "hola2", value: "2" },
-  { label: "hola3", value: "3" },
-  { label: "hola4", value: "4" },
-];
+import {
+  useContinents,
+  useCurrencies,
+  useCountries,
+} from "common/graphql/queries";
+import { BsSearch } from "react-icons/bs";
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
-
   const [country, setCountry] = useState<SingleValue<ISelect>>();
-  const [continents, setContinents] = useState<MultiValue<ISelect>>();
-  const [currencies, setCurrencies] = useState<MultiValue<ISelect>>();
+  const [continentsFilter, setContinentsFilter] = useState<string[]>();
+  const [currencyFilter, setCurrencyFilter] = useState<string>();
 
-  useEffect(() => {
-    if (country) {
-      const countryId: string = country.value;
-      navigate(countryId);
-    }
-  }, [country]);
+  const continents = useContinents();
+  const currencies = useCurrencies();
+  const countries = useCountries({
+    currency: currencyFilter,
+    continents: continentsFilter,
+  });
 
-  useEffect(() => {
-    const continentsId = continents?.map(
-      (continent: SingleValue<ISelect>) => continent?.value
-    );
-
-    const currenciesId = currencies?.map(
-      (currency: SingleValue<ISelect>) => currency?.value
-    );
-  }, [currencies, continents]);
+  const handleDetails = () => {
+    navigate(`${country?.value}`);
+  };
 
   return (
     <React.Fragment>
       <Container fluid>
         <Container className="mt-3">
           <Row>
-            <Col>
-              <h4>Country:</h4>
+            <Col sm="12">
+              <h5>Country:</h5>
+            </Col>
+            <Col className="col-10">
               <Select
                 onChange={(value: SingleValue<ISelect>) => setCountry(value)}
-                options={COUNTRIES}
+                options={countries}
                 placeholder="Choose a country"
+                value={country}
               />
+            </Col>
+            <Col className="col-2">
+              <Button
+                className="w-100 h-100 d-flex  align-items-center justify-content-center"
+                onClick={handleDetails}
+                disabled={!country?.value}
+              >
+                <span className="d-none d-md-flex">Details</span>
+                <BsSearch className="d-md-none align-items-center" />
+              </Button>
             </Col>
           </Row>
           <Row className="mt-3">
@@ -69,17 +62,22 @@ const LandingPage: React.FC = () => {
               <h6>Continent:</h6>
               <Select
                 isMulti={true}
-                onChange={(value: MultiValue<ISelect>) => setContinents(value)}
-                options={CONTINENTS}
+                onChange={(value: MultiValue<ISelect>) => {
+                  setContinentsFilter(value.map((item: ISelect) => item.value));
+                  setCountry(null);
+                }}
+                options={continents}
                 placeholder="Choose continents"
               />
             </Col>
             <Col sm="12" md="6">
               <h6>Currency:</h6>
               <Select
-                isMulti={true}
-                onChange={(value: MultiValue<ISelect>) => setCurrencies(value)}
-                options={CURRENCIES}
+                onChange={(value: SingleValue<ISelect>) => {
+                  setCurrencyFilter(value?.value);
+                  setCountry(null);
+                }}
+                options={currencies}
                 placeholder="Choose currencies"
               />
             </Col>

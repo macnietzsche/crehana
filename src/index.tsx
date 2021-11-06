@@ -3,6 +3,8 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+
 import MainNavbar from "./common/navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -10,19 +12,26 @@ const LandingPage = lazy(() => import("./components/landing-page"));
 const CountryDetail = lazy(() => import("./components/country-detail"));
 const PageNotFound = lazy(() => import("./components/page-not-found"));
 
+const client = new ApolloClient({
+  uri: "https://countries.trevorblades.com/",
+  cache: new InMemoryCache(),
+});
+
 const Fallback = <div>Loading...</div>;
 ReactDOM.render(
   <React.StrictMode>
-    <Router>
-      <MainNavbar />
-      <Suspense fallback={Fallback}>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path=":id" element={<CountryDetail />} />
-          <Route path="*" element={<PageNotFound />} />
-        </Routes>
-      </Suspense>
-    </Router>
+    <ApolloProvider client={client}>
+      <Router>
+        <MainNavbar />
+        <Suspense fallback={Fallback}>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path=":id" element={<CountryDetail />} />
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </Suspense>
+      </Router>
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
