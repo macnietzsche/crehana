@@ -35,7 +35,7 @@ const LandingPage: React.FC = () => {
             <Col sm="12">
               <h5>Country:</h5>
             </Col>
-            <Col className="col-10">
+            <Col className="col-9" md="10">
               <Select
                 onChange={(value: SingleValue<ISelect>) => setCountry(value)}
                 options={countries}
@@ -43,7 +43,7 @@ const LandingPage: React.FC = () => {
                 value={country}
               />
             </Col>
-            <Col className="col-2">
+            <Col className="col-3" md="2">
               <Button
                 className="w-100 h-100 d-flex  align-items-center justify-content-center"
                 onClick={handleDetails}
@@ -78,7 +78,8 @@ const LandingPage: React.FC = () => {
                   setCountry(null);
                 }}
                 options={currencies}
-                placeholder="Choose currencies"
+                placeholder="Choose currency"
+                isClearable={true}
               />
             </Col>
           </Row>
