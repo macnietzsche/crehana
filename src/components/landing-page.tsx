@@ -41,6 +41,8 @@ const LandingPage: React.FC = () => {
                 options={countries.data}
                 placeholder="Choose a country"
                 value={country}
+                isLoading={countries.loading}
+                isDisabled={countries.loading}
               />
             </Col>
             <Col className="col-3" md="2">
@@ -68,6 +70,8 @@ const LandingPage: React.FC = () => {
                 }}
                 options={continents.data}
                 placeholder="Choose continents"
+                isLoading={continents.loading}
+                isDisabled={continents.loading}
               />
             </Col>
             <Col sm="12" md="6">
@@ -80,6 +84,8 @@ const LandingPage: React.FC = () => {
                 options={currencies.data}
                 placeholder="Choose currency"
                 isClearable={true}
+                isLoading={currencies.loading}
+                isDisabled={currencies.loading}
               />
             </Col>
           </Row>
