@@ -9,6 +9,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import Fallback from "components/fallback";
 
 import MainNavbar from "./common/navbar";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -22,7 +23,6 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const Fallback = <div>Loading...</div>;
 ReactDOM.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
