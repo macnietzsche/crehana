@@ -3,7 +3,6 @@ import { Container, Table } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCountry } from "common/graphql/queries";
 import { Link } from "react-router-dom";
-
 import { FiArrowLeft } from "react-icons/fi";
 
 const CountryDetail: React.FC = () => {
@@ -22,10 +21,9 @@ const CountryDetail: React.FC = () => {
       <Container className="d-flex flex-column">
         <div className=" mt-3 d-flex justify-content-between">
           <h2 className="my-auto">{data?.country?.name}</h2>
-          {/* <h4 className="my-auto">{data?.country?.code}</h4> */}
           <img
             src={`https://flagcdn.com/256x192/${id?.toLowerCase()}.png`}
-            alt={`flag-id`}
+            alt={`flag-${id}`}
             width="48"
             height="36"
           />

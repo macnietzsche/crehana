@@ -61,7 +61,7 @@ const LandingPage: React.FC = () => {
               <h5 className="text-center">Apply filters</h5>
             </Col>
             <Col sm="12" md="6">
-              <h6>Continent:</h6>
+              <h6>Continent(s):</h6>
               <Select
                 isMulti={true}
                 onChange={(value: MultiValue<ISelect>) => {
