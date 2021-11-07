@@ -52,10 +52,9 @@ const CountryDetail: React.FC = () => {
             <tr>
               <td className="fw-bold text-start">Languages</td>
               <td className="text-end">
-                {data?.country?.languages.reduce(
-                  (acc: string, language) => (acc += `${language.name}, `),
-                  ""
-                )}
+                {data?.country?.languages
+                  .map((language) => language.name)
+                  .join(", ")}
               </td>
             </tr>
             <tr>
