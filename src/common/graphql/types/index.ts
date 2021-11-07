@@ -1,25 +1,44 @@
-export interface IGenericElement {
+import { ApolloError } from "@apollo/client";
+
+export interface IGenericData {
   code: string;
   name: string;
 }
 
-export interface IContinentsQuery {
-  continents: Array<IGenericElement>;
+export interface IContinentsData {
+  continents: Array<IGenericData>;
 }
 
-export interface ICountriesQuery {
-  countries: Array<IGenericElement>;
+export interface ICountriesData {
+  countries: Array<IGenericData>;
 }
 
-export interface ICurrencyElement {
+export interface ICurrencyData {
   currency: string;
 }
 
 export interface ICurrenciesQuery {
-  countries: Array<ICurrencyElement>;
+  countries: Array<ICurrencyData>;
 }
 
 export interface ICountriesQueryParams {
   currency: string | undefined;
   continents: string[] | undefined;
+}
+
+export interface IGenericOutput<T> {
+  loading: boolean;
+  data: T;
+  error: ApolloError | undefined;
+}
+
+export interface ICountryData {
+  country: {
+    code: string;
+    name: string;
+    curreny: string;
+    continent: { name: string };
+    languages: { name: string };
+    capital: string;
+  };
 }

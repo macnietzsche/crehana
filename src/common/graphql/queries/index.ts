@@ -1,15 +1,17 @@
-import { useQuery, gql } from "@apollo/client";
+import { useQuery, gql, DocumentNode } from "@apollo/client";
 import { ISelect } from "common/types";
 import {
-  IGenericElement,
-  IContinentsQuery,
-  ICurrencyElement,
+  IGenericData,
+  IContinentsData,
+  ICurrencyData,
   ICurrenciesQuery,
-  ICountriesQuery,
+  ICountriesData,
   ICountriesQueryParams,
+  IGenericOutput,
+  ICountryData,
 } from "common/graphql/types";
 
-export const useContinents = (): ISelect[] | undefined => {
+export const useContinents = (): IGenericOutput<ISelect[] | undefined> => {
   const CONTINENTS_QUERY = gql`
     query {
       continents {
@@ -18,13 +20,15 @@ export const useContinents = (): ISelect[] | undefined => {
       }
     }
   `;
-  const continentQuery = useQuery<IContinentsQuery>(CONTINENTS_QUERY);
-  return continentQuery.data?.continents.map((continent: IGenericElement) => {
+  const { loading, data, error } = useQuery<IContinentsData>(CONTINENTS_QUERY);
+  const normalizedData = data?.continents.map((continent: IGenericData) => {
     return { label: continent.name, value: continent.code } as ISelect;
   });
+
+  return { loading, data: normalizedData, error };
 };
 
-export const useCurrencies = (): ISelect[] | undefined => {
+export const useCurrencies = (): IGenericOutput<ISelect[] | undefined> => {
   const CURRENCIES_QUERY = gql`
     query {
       countries {
@@ -33,9 +37,9 @@ export const useCurrencies = (): ISelect[] | undefined => {
     }
   `;
 
-  const currencyQuery = useQuery<ICurrenciesQuery>(CURRENCIES_QUERY);
-  const currencyList = currencyQuery.data?.countries.reduce(
-    (acc: string[], current: ICurrencyElement) => {
+  const { loading, data, error } = useQuery<ICurrenciesQuery>(CURRENCIES_QUERY);
+  const currencyList = data?.countries.reduce(
+    (acc: string[], current: ICurrencyData) => {
       if (current.currency) {
         const countryCurrencies: Array<string> = current.currency.split(",");
         const uniqueCurrencies = countryCurrencies.filter(
@@ -47,32 +51,103 @@ export const useCurrencies = (): ISelect[] | undefined => {
     },
     []
   );
-  return currencyList?.map((currency: string) => {
+  const normalizedData = currencyList?.map((currency: string) => {
     return { label: currency, value: currency } as ISelect;
   });
+
+  return { loading, data: normalizedData, error };
 };
 
 export const useCountries = ({
   currency,
   continents,
-}: ICountriesQueryParams): ISelect[] | undefined => {
-  const filterCurrencies = currency ? `currency: {regex: "${currency}"}` : "";
+}: ICountriesQueryParams): IGenericOutput<ISelect[] | undefined> => {
+  const isCurrencyValid = currency && true;
+  const areContinentsValid = continents && continents.length > 0;
 
-  const filterContinents =
-    continents && continents.length > 0
-      ? `continent: {in: ${JSON.stringify(continents)}}`
-      : "";
+  let countries_query: DocumentNode;
+  if (isCurrencyValid && areContinentsValid) {
+    countries_query = gql`
+      query Countries($currency: String!, $continents: Array!) {
+        countries(
+          filter: {
+            currency: { regex: $currency }
+            continent: { in: $continents }
+          }
+        ) {
+          code
+          name
+        }
+      }
+    `;
+  } else if (isCurrencyValid) {
+    countries_query = gql`
+      query Countries($currency: String!) {
+        countries(filter: { currency: { regex: $currency } }) {
+          code
+          name
+        }
+      }
+    `;
+  } else if (areContinentsValid) {
+    countries_query = gql`
+      query Countries($continents: [String]!) {
+        countries(filter: { continent: { in: $continents } }) {
+          code
+          name
+        }
+      }
+    `;
+  } else {
+    countries_query = gql`
+      query {
+        countries {
+          code
+          name
+        }
+      }
+    `;
+  }
 
-  const countries_query = gql`
-    query {
-      countries(filter: {${filterContinents} ${filterCurrencies}}) {
+  const countriesQuery = useQuery<ICountriesData>(countries_query, {
+    variables: { currency, continents },
+  });
+  const normalizedData = countriesQuery.data?.countries.map(
+    (country: IGenericData) => {
+      return { label: country.name, value: country.code } as ISelect;
+    }
+  );
+
+  return {
+    loading: countriesQuery.loading,
+    data: normalizedData,
+    error: countriesQuery.error,
+  };
+};
+
+export const useCountry = (
+  code: string
+): IGenericOutput<ICountryData | undefined> => {
+  const country_query = gql`
+    query Country($code: ID!) {
+      country(code: $code) {
         code
         name
+        currency
+        continent {
+          name
+        }
+        languages {
+          name
+        }
+        capital
       }
     }
   `;
-  const countriesQuery = useQuery<ICountriesQuery>(countries_query);
-  return countriesQuery.data?.countries.map((country: IGenericElement) => {
-    return { label: country.name, value: country.code } as ISelect;
+
+  const { loading, data, error } = useQuery<ICountryData>(country_query, {
+    variables: { code },
   });
+
+  return { loading, data, error };
 };

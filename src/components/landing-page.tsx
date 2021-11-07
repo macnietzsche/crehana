@@ -38,7 +38,7 @@ const LandingPage: React.FC = () => {
             <Col className="col-9" md="10">
               <Select
                 onChange={(value: SingleValue<ISelect>) => setCountry(value)}
-                options={countries}
+                options={countries.data}
                 placeholder="Choose a country"
                 value={country}
               />
@@ -66,7 +66,7 @@ const LandingPage: React.FC = () => {
                   setContinentsFilter(value.map((item: ISelect) => item.value));
                   setCountry(null);
                 }}
-                options={continents}
+                options={continents.data}
                 placeholder="Choose continents"
               />
             </Col>
@@ -77,7 +77,7 @@ const LandingPage: React.FC = () => {
                   setCurrencyFilter(value?.value);
                   setCountry(null);
                 }}
-                options={currencies}
+                options={currencies.data}
                 placeholder="Choose currency"
                 isClearable={true}
               />
