@@ -126,9 +126,9 @@ export const useCountries = ({
 };
 
 export const useCountry = (
-  code: string
+  code: string | undefined
 ): IGenericOutput<ICountryData | undefined> => {
-  const country_query = gql`
+  const COUNTRY_QUERY = gql`
     query Country($code: ID!) {
       country(code: $code) {
         code
@@ -145,7 +145,7 @@ export const useCountry = (
     }
   `;
 
-  const { loading, data, error } = useQuery<ICountryData>(country_query, {
+  const { loading, data, error } = useQuery<ICountryData>(COUNTRY_QUERY, {
     variables: { code },
   });
 

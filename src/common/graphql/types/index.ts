@@ -33,12 +33,14 @@ export interface IGenericOutput<T> {
 }
 
 export interface ICountryData {
-  country: {
-    code: string;
-    name: string;
-    curreny: string;
-    continent: { name: string };
-    languages: { name: string };
-    capital: string;
-  };
+  country:
+    | {
+        code: string;
+        name: string;
+        currency: string;
+        continent: { name: string };
+        languages: Array<{ name: string }>;
+        capital: string;
+      }
+    | undefined;
 }
