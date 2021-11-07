@@ -2,7 +2,12 @@ import React, { lazy, Suspense } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
 import MainNavbar from "./common/navbar";
@@ -27,7 +32,8 @@ ReactDOM.render(
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path=":id" element={<CountryDetail />} />
-            <Route path="*" element={<PageNotFound />} />
+            <Route path="/page-not-found" element={<PageNotFound />} />
+            <Route path="*" element={<Navigate to="/page-not-found" />} />
           </Routes>
         </Suspense>
       </Router>
