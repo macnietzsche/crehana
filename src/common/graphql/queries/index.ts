@@ -68,7 +68,7 @@ export const useCountries = ({
   let countries_query: DocumentNode;
   if (isCurrencyValid && areContinentsValid) {
     countries_query = gql`
-      query Countries($currency: String!, $continents: Array!) {
+      query Countries($currency: String!, $continents: [String]!) {
         countries(
           filter: {
             currency: { regex: $currency }

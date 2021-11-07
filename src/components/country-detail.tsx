@@ -15,7 +15,7 @@ const CountryDetail: React.FC = () => {
     if (!loading && !data?.country) {
       navigate("/page-not-found");
     }
-  }, [data, loading]);
+  }, [data, loading, navigate]);
 
   return (
     <Container fluid>
