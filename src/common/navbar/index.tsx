@@ -10,8 +10,8 @@ const MainNavbar: React.FC = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <div className="w-100 d-flex justify-content-md-end">
             <Nav>
-              <Link to="/" style={{ textDecoration: "none" }}>
-                <Nav.Link>Home</Nav.Link>
+              <Link to="/" className="nav-link">
+                Home
               </Link>
             </Nav>
           </div>
