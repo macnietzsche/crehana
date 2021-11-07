@@ -38,19 +38,18 @@ export const useCurrencies = (): IGenericOutput<ISelect[] | undefined> => {
   `;
 
   const { loading, data, error } = useQuery<ICurrenciesQuery>(CURRENCIES_QUERY);
-  const currencyList = data?.countries.reduce(
-    (acc: string[], current: ICurrencyData) => {
-      if (current.currency) {
-        const countryCurrencies: Array<string> = current.currency.split(",");
-        const uniqueCurrencies = countryCurrencies.filter(
-          (countryCurrency: string) => !acc.includes(countryCurrency)
-        );
-        acc.push(...uniqueCurrencies);
-      }
-      return acc;
-    },
-    []
-  );
+
+  const currencyList = data?.countries?.reduce((acc: string[], current) => {
+    if (current.currency) {
+      const countryCurrencies = current.currency.split(",");
+      const uniqueCurrencies = countryCurrencies.filter(
+        (countryCurrency) => !acc.includes(countryCurrency)
+      );
+      acc.push(...uniqueCurrencies);
+    }
+    return acc;
+  }, []);
+
   const normalizedData = currencyList?.map((currency: string) => {
     return { label: currency, value: currency } as ISelect;
   });

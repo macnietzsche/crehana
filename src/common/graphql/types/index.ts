@@ -14,7 +14,7 @@ export interface ICountriesData {
 }
 
 export interface ICurrencyData {
-  currency: string;
+  currency: string | undefined;
 }
 
 export interface ICurrenciesQuery {
