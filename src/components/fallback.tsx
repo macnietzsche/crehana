@@ -5,7 +5,7 @@ const Fallback: React.FC = () => {
   return (
     <Container fluid>
       <Container>
-        <span>Loading...</span>
+        <h4 data-testid="loading-label">Loading...</h4>
       </Container>
     </Container>
   );
